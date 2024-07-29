@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burger Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        #burgerList {
+            margin-bottom: 20px;
+        }
+        .burger-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #addBurgerForm {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        a {
+            display: inline-block;
+            margin: 10px 0;
+            text-decoration: none;
+            color: #4CAF50;
+            font-size: 16px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Burger Admin Panel</h1>
+    <a href="/blog">Go to Blog Page</a>
+    <div id="burgerList"></div>
+    <div id="addBurgerForm">
+        <h2>Add New Burger</h2>
+        <input type="text" id="newBurgerName" placeholder="Burger Name">
+        <input type="text" id="newBurgerPrice" placeholder="Price">
+        <input type="text" id="newBurgerPhoto" placeholder="Photo URL">
+        <button onclick="addBurger()">Add Burger</button>
+    </div>
+
+    <script>
+        let burgers = [];
+
+        function renderBurgers() {
+            const burgerList = document.getElementById('burgerList');
+            burgerList.innerHTML = '';
+            burgers.forEach((burger, index) => {
+                const burgerItem = document.createElement('div');
+                burgerItem.className = 'burger-item';
+                burgerItem.innerHTML = `
+                    <input type="text" value="${burger.name}" onchange="updateBurger(${index}, 'name', this.value)">
+                    <input type="text" value="${burger.price}" onchange="updateBurger(${index}, 'price', this.value)">
+                    <input type="text" value="${burger.photo}" onchange="updateBurger(${index}, 'photo', this.value)">
+                    <button onclick="deleteBurger(${index})">Delete</button>
+                `;
+                burgerList.appendChild(burgerItem);
+            });
+        }
+
+        function updateBurger(index, property, value) {
+            burgers[index][property] = value;
+            saveBurgers();
+        }
+
+        function deleteBurger(index) {
+            burgers.splice(index, 1);
+            saveBurgers();
+            renderBurgers();
+        }
+
+        function addBurger() {
+            const name = document.getElementById('newBurgerName').value;
+            const price = document.getElementById('newBurgerPrice').value;
+            const photo = document.getElementById('newBurgerPhoto').value;
+            if (name && price && photo) {
+                burgers.push({ name, price, photo });
+                saveBurgers();
+                renderBurgers();
+                document.getElementById('newBurgerName').value = '';
+                document.getElementById('newBurgerPrice').value = '';
+                document.getElementById('newBurgerPhoto').value = '';
+            } else {
+                alert('Please fill in all fields');
+            }
+        }
+
+        function saveBurgers() {
+            fetch('/api/burgers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(burgers),
+            })
+            .then(response => response.json())
+            .then(data => console.log('Burgers saved:', data))
+            .catch((error) => console.error('Error:', error));
+        }
+
+        function loadBurgers() {
+            fetch('/api/burgers')
+            .then(response => response.json())
+            .then(data => {
+                burgers = data;
+                renderBurgers();
+            })
+            .catch((error) => console.error('Error:', error));
+        }
+
+        loadBurgers();
+    </script>
+</body>
+</html>

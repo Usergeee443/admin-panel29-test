@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .blog-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        a {
+            display: inline-block;
+            margin: 10px 0;
+            text-decoration: none;
+            color: #4CAF50;
+            font-size: 16px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blog</h1>
+    <a href="/">Back to Home Page</a>
+    <div id="blogList"></div>
+
+    <script>
+        async function loadBlogData() {
+            try {
+                const response = await fetch('/api/burgers');
+                const data = await response.json();
+                const blogList = document.getElementById('blogList');
+                blogList.innerHTML = '';
+                data.forEach(item => {
+                    const blogItem = document.createElement('div');
+                    blogItem.className = 'blog-item';
+                    blogItem.innerHTML = `
+                        <h2>${item.name}</h2>
+                        <p>Price: ${item.price}</p>
+                        <img src="${item.photo}" alt="${item.name}" style="width:100%; max-width:300px;">
+                    `;
+                    blogList.appendChild(blogItem);
+                });
+            } catch (error) {
+                console.error('Error loading blog data:', error);
+            }
+        }
+
+        loadBlogData();
+    </script>
+</body>
+</html>
