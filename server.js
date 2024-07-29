@@ -37,7 +37,6 @@
 // app.listen(PORT, () => {
 //     console.log(`Server is running on port ${PORT}`);
 // });
-
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
@@ -48,6 +47,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// API endpoints
 app.get('/api/burgers', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, 'data', 'burgers.json'), 'utf8');
@@ -66,6 +66,7 @@ app.post('/api/burgers', async (req, res) => {
     }
 });
 
+// Serve static HTML files
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
