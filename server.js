@@ -50,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/burgers', async (req, res) => {
     try {
-        const data = await fs.readFile('burgers.json', 'utf8');
+        const data = await fs.readFile(path.join(__dirname, 'data', 'burgers.json'), 'utf8');
         res.json(JSON.parse(data));
     } catch (error) {
         res.status(500).json({ error: 'Error reading burger data' });
@@ -59,7 +59,7 @@ app.get('/api/burgers', async (req, res) => {
 
 app.post('/api/burgers', async (req, res) => {
     try {
-        await fs.writeFile('burgers.json', JSON.stringify(req.body, null, 2));
+        await fs.writeFile(path.join(__dirname, 'data', 'burgers.json'), JSON.stringify(req.body, null, 2));
         res.json({ message: 'Burgers saved successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Error saving burger data' });

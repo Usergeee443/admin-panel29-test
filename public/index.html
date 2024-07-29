@@ -110,7 +110,11 @@
             const price = document.getElementById('newBurgerPrice').value;
             const photo = document.getElementById('newBurgerPhoto').value;
             if (name && price && photo) {
-                burgers.push({ name, price, photo });
+                burgers.push({
+                    name,
+                    price,
+                    photo
+                });
                 saveBurgers();
                 renderBurgers();
                 document.getElementById('newBurgerName').value = '';
@@ -136,14 +140,13 @@
 
         function loadBurgers() {
             fetch('/api/burgers')
-            .then(response => response.json())
-            .then(data => {
-                burgers = data;
-                renderBurgers();
-            })
-            .catch((error) => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    burgers = data;
+                    renderBurgers();
+                })
+                .catch((error) => console.error('Error:', error));
         }
-
         loadBurgers();
     </script>
 </body>
